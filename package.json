@@ -13,5 +13,5 @@
     "test": "node app.js"
   },
   "author": "anback",
-  "license": "ISC",
+  "license": "ISC"
 }
