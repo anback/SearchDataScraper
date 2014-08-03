@@ -6,9 +6,6 @@
   "dependencies": {
     "mubsub" : "1.0.4"
   },
-  "scripts": {
-    "test": "node app.js"
-  },
   "author": "anback",
   "license": "ISC"
 }
