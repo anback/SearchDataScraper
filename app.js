@@ -1,6 +1,8 @@
 var exec = require('child_process').exec;
 var skyscannerScraperCommand = 'java -jar ' + require('path').join(__dirname, 'SSScraper.jar ');
 var mubsub = require('mubsub');
+var isdebug = process.argv[2] == 'debug';
+console.log("IsDebug: " + isdebug);
 
 var getFormattedDate = function(input) {
     input = input.toJSON().split('T')[0];
@@ -36,6 +38,10 @@ var channel = client.channel('searches');
 client.on('error', console.error);
 channel.on('error', console.error);
 
+var count = 0;
 channel.subscribe('NewSearch', function (message) {
-    executeSearch(message);
+
+    if(!isdebug || count == 0)
+        executeSearch(message);
+    count++;
 });
