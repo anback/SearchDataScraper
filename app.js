@@ -19,8 +19,6 @@ var getFormattedDate = function(input) {
 
 var count = 0;
 
-
-
 var executeSearch = function(data) {
     count++;
     console.log(count);
@@ -36,7 +34,7 @@ var executeSearch = function(data) {
 
         var url = urlPrefix + stdout.split(urlPrefix)[1].split('?')[0];
         console.log('publishing url: ' +  url);
-        urlChannel.publish('newUrl', url);
+        urlChannel.publish('NewUrl', url);
     });
 }
 
