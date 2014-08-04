@@ -17,11 +17,23 @@ var getFormattedDate = function(input) {
     
 }
 
+var count = 0;
+
+
+
 var executeSearch = function(data) {
+    count++;
+    console.log(count);
+    if(count % 3 != 0)
+        return;
     var ssUrl = 'http://www.skyscanner.de/transport/fluge/{0}/{1}/{2}/{3}/?usrplace=DE'
     ssUrl = ssUrl.format(data.in_FromCity, data.in_ToCity, getFormattedDate(data.in_DepartureDate), getFormattedDate(data.in_ReturnDate));
     console.log(ssUrl);
     childProcess.execFile(binPath, [path.join(__dirname, 'ssScraper.js'), ssUrl], function(err, stdout, stderr) {
+
+        if(stdout.split(urlPrefix).length <= 1)
+            return;
+
         var url = urlPrefix + stdout.split(urlPrefix)[1].split('?')[0];
         console.log('publishing url: ' +  url);
         urlChannel.publish('newUrl', url);
@@ -35,14 +47,12 @@ var urlChannel = client.channel('urls');
 client.on('error', console.error);
 searchChannel.on('error', console.error);
 
-var count = 0;
-searchChannel.subscribe('NewSearch', function (message) {
 
+searchChannel.subscribe('NewSearch', function (message) {
     if(!isdebug || count == 0)
         executeSearch(message);
-    count++;
+    count = count + 1;
 });
-
 
 // First, checks if it isn't implemented yet.
 if (!String.prototype.format) {
