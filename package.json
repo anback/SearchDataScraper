@@ -6,7 +6,9 @@
   "dependencies": {
     "mubsub": "1.0.4",
     "phantomjs": "^1.9.7-15",
-    "datejs": "^1.0.0-rc1"
+    "datejs": "^1.0.0-rc1",
+    "jquery": "^2.1.1",
+    "jsdom": "^0.11.1"
   },
   "author": "anback",
   "license": "ISC"
