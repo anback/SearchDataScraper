@@ -57,7 +57,6 @@ var parseAndSendSSHTML = function(html) {
     var res = {};
     env(html, function (errors, window) {
         var $ = require('jquery')(window);
-        console.log("best price: ");
         console.log($('.header-info-bestprice').text());
 
         res.BestPrice = $('.header-info-bestprice .price').text();
@@ -90,10 +89,14 @@ var parseAndSendSSHTML = function(html) {
             return res;
         });
         res.Itineraries = $.makeArray( res.Itineraries );
+        if(res.Itineraries.length != 10)
+        {
+            console.log("no result found");
+            return;
+        }
         console.log("Publishing Result!");
         urlChannel.publish('NewRes', res);
     });
-    //console.log(res);
     return res;
 }
 
