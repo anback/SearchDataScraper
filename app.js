@@ -64,7 +64,7 @@ var executeSearch = function(data) {
 
     
     console.log("Processcount: " + processcount);
-    if(processcount < 30)
+    if(processcount < 25)
     {
         processcount++;
         var process = childProcess.execFile(binPath, [path.join(__dirname, 'ssScraper.js'), ssUrl], function(err, stdout, stderr) {
@@ -72,8 +72,7 @@ var executeSearch = function(data) {
         });
 
         process.on('exit', function() {
-            
-            processcount--
+            processcount--;
         });
     }
 }
