@@ -23,58 +23,155 @@ var count = 0;
 var processcount = 0;
 
 var executeSearch = function(data) {
+
+    /*
+    console.log("********** NEW SEARCH ***************")
+    console.log("Got: " + data.length + " rows");
     
+    var phantomjsCloudurl = 'http://api.phantomjscloud.com/batch/browser/v1/315187e8558d52f13127dc55d9008ac9c6af0c84';
+
+    var body = {
+        batchRequests : data.map(function(data) {
+            
+            var ssUrl = 'http://www.skyscanner.de/transport/fluge/{0}/{1}/{2}/{3}/?usrplace=DE'
+            var departureDate = getFormattedDate(data.in_DepartureDate);
+            var returnDate = getFormattedDate(data.in_ReturnDate);
+            ssUrl = ssUrl.format(data.in_FromCity, data.in_ToCity, departureDate, returnDate);
+
+            if(departureDate.length != 6)
+                return undefined;
+
+            if(returnDate.length != 6)
+                return undefined;
+            
+            console.log(ssUrl);
+
+            var res =    
+                {
+                    targetUrl: ssUrl,
+                    requestType: "text",
+                    outputAsJson: true,
+                    loadImages: false,
+                    isDebug: false,
+                    postDomLoadedTimeout: 200,
+                    delayTime : 50000,
+                    //execScripts : {preInjected:["window['pjsc_meta'].remainingTasks++;var cancelHandle = setInterval(function(){var isReady= document.getElementsByClassName('header-info-bestprice').length > 0;if(isReady){window['pjsc_meta'].remainingTasks--;clearInterval(cancelHandle);}},1000);"]},
+                    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36",
+                    viewportSize : {"height": 1920,"width": 912}
+                };
+            return res;
+        })
+    };      
+
+    body.batchRequests = body.batchRequests.filter(function(item) {
+        return item != undefined;
+    });
+
+    var options = {
+        method : 'POST',
+        body : JSON.stringify(body),
+        headers : { 'Content-Type' : 'application/json' }
+    }
+
+    //console.log("sending to PhantomJS cloud");
+    request(phantomjsCloudurl, options, function(err, res, jsonBody) {        
+        var intervalObject = setInterval(function() {
+            var body = JSON.parse(jsonBody);
+            console.log("Getting Callbackurl: " + body.callbackUrl);
+            request(body.callbackUrl, function(err, res, jsonBody) {
+
+                try {
+                    var body = JSON.parse(jsonBody);
+                    console.log("StillProcessing: " + body.stillProcessing);
+                    if(body.stillProcessing == 0 )
+                    {
+                        console.log("Clearing Interval");
+                        clearInterval(intervalObject);
+                    }
+                    
+                    console.log("justCompleted: " + body.justCompleted.length);
+                    body.justCompleted.forEach(function(jsonItem) {
+
+                        try {
+                            var item = JSON.parse(jsonItem);
+                            parseAndSendSSHTML(item.pageContent);
+                        }
+                        catch (e) {
+                            console.log(e);
+                            console.log(jsonItem);
+                        }
+                    });
+                }
+                catch (e) {
+                    console.log(e)
+                    console.log(jsonBody);
+                }
+            });
+        }, 60000);
+        //parseAndSendSSHTML(body.pageContent);
+    });
+    
+    */
+
+    data.forEach(function(item) {
+        
+        dataItems.push(item);
+
+        if(dataItems.length > 20)
+            dataItems.shift();
+    });
+
     /*
     count++;
     console.log(count);
     if(count % 3 == 0)
         return;
-    */
-    var ssUrl = 'http://www.skyscanner.de/transport/fluge/{0}/{1}/{2}/{3}/?usrplace=DE'
-    ssUrl = ssUrl.format(data.in_FromCity, data.in_ToCity, getFormattedDate(data.in_DepartureDate), getFormattedDate(data.in_ReturnDate));
-    console.log(ssUrl);
+    */  
+}
 
-    /*
-    var phantomjsCloudurl = 'http://api.phantomjscloud.com/single/browser/v1/cc4d4fb2d18599197a5a87c8d42de349c5b87f22';
+var dataItems = [];
+var processcount = 0;
 
-    var body = JSON.stringify({
-      "targetUrl": ssUrl,
-      "requestType": "text",
-      "outputAsJson": true,
-      "loadImages": false,
-      "isDebug": false,
-      "timeout": 15000,
-      "postDomLoadedTimeout": 5000,
-      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36",
-      "resourceUrlBlacklist": []});
+setInterval(function() {
+    console.log(processcount + " processes active.");
+}, 500)
 
-    console.log(body);
-    var options = {
-        method : 'POST',
-        body : body
-    }
-
+setInterval(function() {
     
-    request(phantomjsCloudurl, options, function(err, res, body) {
-        console.log(err);
-        //console.log(res);
-        console.log(body);
-    });
-*/
+    if(processcount < 15)
+        StartNewWork();
+}, 15000)
 
-    
-    console.log("Processcount: " + processcount);
-    if(processcount < 25)
+
+function StartNewWork() {
+
+    var data = dataItems.pop();
+
+    if(data==undefined)
     {
-        processcount++;
-        var process = childProcess.execFile(binPath, [path.join(__dirname, 'ssScraper.js'), ssUrl], function(err, stdout, stderr) {
-            parseAndSendSSHTML(stdout);
-        });
-
-        process.on('exit', function() {
-            processcount--;
-        });
+        setTimeout(StartNewWork, 1000);
+        return;
     }
+
+    var ssUrl = 'http://www.skyscanner.de/transport/fluge/{0}/{1}/{2}/{3}/?usrplace=DE';
+    var departureDate = getFormattedDate(data.in_DepartureDate);
+    var returnDate = getFormattedDate(data.in_ReturnDate);
+    ssUrl = ssUrl.format(data.in_FromCity, data.in_ToCity, departureDate, returnDate);
+
+    if(departureDate.length != 6)
+        return undefined;
+
+    if(returnDate.length != 6)
+        return undefined;
+
+    processcount++;
+    console.log("Processing " + ssUrl);
+    var process = childProcess.execFile(binPath, [path.join(__dirname, 'ssScraper.js'), ssUrl], function(err, stdout, stderr) {
+        parseAndSendSSHTML(stdout);
+        StartNewWork();
+        processcount--;
+    });
+    
 }
 
 var client = mubsub('mongodb://swalo:84kAanan@ds051658.mongolab.com:51658/swalo');
@@ -86,8 +183,28 @@ searchChannel.on('error', console.error);
 
 
 searchChannel.subscribe('NewSearch', function (message) {
+
+
     if(!isdebug || count == 0)
+    {
         executeSearch(message);
+    }
+
+    if(count == 0) {
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+    }
+
     count = count + 1;
 });
 
@@ -117,7 +234,7 @@ var parseAndSendSSHTML = function(html) {
     var res = {};
     env(html, function (errors, window) {
         var $ = require('jquery')(window);
-        //console.log($('.header-info-bestprice').text());
+        console.log($('.header-info-bestprice').text());
 
         res.BestPrice = $('.header-info-bestprice .price').text();
         res.Itineraries = $('.day-list-item').map(function(item) {
@@ -154,12 +271,11 @@ var parseAndSendSSHTML = function(html) {
             //console.log("no result found");
             return;
         }
-        //console.log("Publishing Result!");
+        console.log("Publishing Result!");
         searchdataChannel.publish('NewRes', res);
     });
     return res;
 }
-
 
 // First, checks if it isn't implemented yet.
 if (!String.prototype.format) {
