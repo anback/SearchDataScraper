@@ -1,5 +1,6 @@
 var mubsub = require('mubsub');
 var isdebug = process.argv[2] == 'debug';
+var maxProcesses = process.argv[3];
 var phantomjs = require('phantomjs');
 var binPath = phantomjs.path;
 var path = require('path');
@@ -7,6 +8,8 @@ var childProcess = require('child_process');
 var urlPrefix = 'http://www.skyscanner.de/dataservices/routedate/v2.0/';
 var request = require('request');
 console.log("IsDebug: " + isdebug);
+console.log("MaxProcesses: " + maxProcesses);
+
 
 
 var getFormattedDate = function(input) {
@@ -138,7 +141,7 @@ setInterval(function() {
 
 setInterval(function() {
     
-    if(processcount < 15)
+    if(processcount < maxProcesses)
         StartNewWork();
 }, 15000)
 
@@ -166,7 +169,14 @@ function StartNewWork() {
 
     processcount++;
     console.log("Processing " + ssUrl);
+    console.log(binPath);
+    console.log(path.join(__dirname, 'ssScraper.js'));
+
     var process = childProcess.execFile(binPath, [path.join(__dirname, 'ssScraper.js'), ssUrl], function(err, stdout, stderr) {
+        console.log(err);
+        console.log(stdout);
+        console.log(stderr);
+        
         parseAndSendSSHTML(stdout);
         StartNewWork();
         processcount--;
@@ -191,13 +201,6 @@ searchChannel.subscribe('NewSearch', function (message) {
     }
 
     if(count == 0) {
-        StartNewWork();
-        StartNewWork();
-        StartNewWork();
-        StartNewWork();
-        StartNewWork();
-        StartNewWork();
-        StartNewWork();
         StartNewWork();
         StartNewWork();
         StartNewWork();
