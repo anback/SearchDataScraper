@@ -173,9 +173,9 @@ function StartNewWork() {
     console.log(path.join(__dirname, 'ssScraper.js'));
 
     var process = childProcess.execFile(binPath, [path.join(__dirname, 'ssScraper.js'), ssUrl], function(err, stdout, stderr) {
-        console.log(err);
-        console.log(stdout);
-        console.log(stderr);
+
+        if(err)
+            console.log(err);
         
         parseAndSendSSHTML(stdout);
         StartNewWork();
@@ -201,11 +201,10 @@ searchChannel.subscribe('NewSearch', function (message) {
     }
 
     if(count == 0) {
-        StartNewWork();
-        StartNewWork();
-        StartNewWork();
-        StartNewWork();
-        StartNewWork();
+        for (var i = maxProcesses - 1; i >= 0; i--) {
+            StartNewWork();
+        };
+        
     }
 
     count = count + 1;
