@@ -1,14 +1,15 @@
+var os = require('os');
 var mubsub = require('mubsub');
 var isdebug = process.argv[2] == 'debug';
-var maxProcesses = process.argv[3];
 var phantomjs = require('phantomjs');
 var binPath = phantomjs.path;
 var path = require('path');
 var childProcess = require('child_process');
 var urlPrefix = 'http://www.skyscanner.de/dataservices/routedate/v2.0/';
 var request = require('request');
+var cpus = os.cpus();
 console.log("IsDebug: " + isdebug);
-console.log("MaxProcesses: " + maxProcesses);
+console.log("Number of CPUs: " + cpus.length);
 
 
 
@@ -137,14 +138,16 @@ var processcount = 0;
 
 setInterval(function() {
     console.log(processcount + " processes active.");
-}, 500)
 
-setInterval(function() {
+    var loadavg = os.loadavg()[0];
     
-    if(processcount < maxProcesses)
-        StartNewWork();
-}, 15000)
 
+    console.log("Loadaverage: " + loadavg);
+    if(loadavg < cpus.length)
+    {
+        StartNewWork();
+    }
+}, 15000);
 
 function StartNewWork() {
 
@@ -168,14 +171,9 @@ function StartNewWork() {
         return undefined;
 
     processcount++;
-    console.log("Processing " + ssUrl);
-    console.log(binPath);
-    console.log(path.join(__dirname, 'ssScraper.js'));
+    console.log("Processing " + ssUrl.split('http://www.skyscanner.de/transport/fluge/')[1]);
 
     var process = childProcess.execFile(binPath, [path.join(__dirname, 'ssScraper.js'), ssUrl], function(err, stdout, stderr) {
-
-        if(err)
-            console.log(err);
         
         parseAndSendSSHTML(stdout);
         StartNewWork();
@@ -201,10 +199,10 @@ searchChannel.subscribe('NewSearch', function (message) {
     }
 
     if(count == 0) {
-        for (var i = maxProcesses - 1; i >= 0; i--) {
-            StartNewWork();
-        };
-        
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();        
     }
 
     count = count + 1;
@@ -236,7 +234,6 @@ var parseAndSendSSHTML = function(html) {
     var res = {};
     env(html, function (errors, window) {
         var $ = require('jquery')(window);
-        console.log($('.header-info-bestprice').text());
 
         res.BestPrice = $('.header-info-bestprice .price').text();
         res.Itineraries = $('.day-list-item').map(function(item) {
@@ -273,7 +270,8 @@ var parseAndSendSSHTML = function(html) {
             //console.log("no result found");
             return;
         }
-        console.log("Publishing Result!");
+
+        console.log("Best Price: " + res.BestPrice + ", Orig: " + res.Itineraries[0].Origin + ", Dest: " + res.Itineraries[0].Dest);
         searchdataChannel.publish('NewRes', res);
     });
     return res;
