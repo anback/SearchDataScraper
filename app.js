@@ -10,8 +10,7 @@ var request = require('request');
 var cpus = os.cpus();
 console.log("IsDebug: " + isdebug);
 console.log("Number of CPUs: " + cpus.length);
-
-
+var importantCities = ['BKK','PMI','IST','NYC','BCN','MIA','AYT','LIS','LON','LAX','DPS','AGP','MAD','HKT','SKG','HAV','HER','LPA','ADB','ATH','SFO','VIE','IBZ','CPT','MUC','DXB','FRA','PAR','CMB','MNL','ROM','AMS','BER','FAO','LAS','KUL','DUB','JFK','SYD','SJO','SIN','FUE','ALC','MEX','HAM','CUN','SCL','SGN','TFS','CPH','HRG','SAW','BUD','TCI','BOG','USM','LIM','OPO','LHR','DEL','SPU','CTA','ZRH','DUS','HKG','VCE','AKL','BUE','NAP','JNB','STO','TLV','RAK','NCE','CDG','BOM','EDI','RIO','MOW','OLB','YVR','CFU','ACE','TYO','CAI','VLC','HNL','MLA','OSL','BEY','MEL','PRG','FCO','STR','FLL','SVO','RHO','WAW','HEL','MAN']
 
 var getFormattedDate = function(input) {
     input = input.toJSON().split('20')[1];
@@ -169,6 +168,13 @@ function StartNewWork() {
 
     if(returnDate.length != 6)
         return undefined;
+
+    
+    if(!importantCities.some(function(importantIata) {
+        return importantIata == data.in_ToCity;
+    }))
+        return;
+        
 
     processcount++;
     console.log("Processing " + ssUrl.split('http://www.skyscanner.de/transport/fluge/')[1]);
