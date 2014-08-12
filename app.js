@@ -181,7 +181,14 @@ function StartNewWork() {
 
     var process = childProcess.execFile(binPath, [path.join(__dirname, 'ssScraper.js'), ssUrl], function(err, stdout, stderr) {
         
-        parseAndSendSSHTML(stdout);
+        try {
+            parseAndSendSSHTML(stdout);
+        }
+        catch (e)
+        {
+            
+        }
+        
         StartNewWork();
         processcount--;
     });
