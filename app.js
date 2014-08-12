@@ -146,7 +146,7 @@ setInterval(function() {
     {
         StartNewWork();
     }
-}, 15000);
+}, 3000);
 
 function StartNewWork() {
 
