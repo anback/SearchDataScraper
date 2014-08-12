@@ -169,12 +169,12 @@ function StartNewWork() {
     if(returnDate.length != 6)
         return undefined;
 
-    
+    /*
     if(!importantCities.some(function(importantIata) {
         return importantIata == data.in_ToCity;
     }))
         return;
-        
+    */  
 
     processcount++;
     console.log("Processing " + ssUrl.split('http://www.skyscanner.de/transport/fluge/')[1]);
