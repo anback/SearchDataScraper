@@ -187,6 +187,7 @@ function StartNewWork() {
         catch (e)
         {
             console.log(e);
+            console.log(stdout);
         }
         
         StartNewWork();

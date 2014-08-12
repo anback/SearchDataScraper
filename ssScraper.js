@@ -38,13 +38,13 @@ page.open(url, function (status) {
         }
     }, function() {
         phantom.exit();
-    }, 60000);
+    }, 90000);
 });
 
 
 setTimeout(function() {
     phantom.exit();
-}, 60000)
+}, 90000)
 
 
 function waitFor(testFx, onReady, timeOutMillis) {
