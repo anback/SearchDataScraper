@@ -6,20 +6,6 @@ page.viewportSize = {
   height: 912
 };
 
-//var url = 'http://www.skyscanner.de/transport/fluge/DUS/LAS/140821/140829/?usrplace=DE';
-
-page.onResourceReceived = function(response) {
-    //console.log(response.url);
-    /*
-    if(response.url == 'http://www.skyscanner.de/dataservices/routedate/v2.0/?use204=true')
-        return;
-
-    if(response.url.indexOf('dataservices/routedate/v2.0') > 0)
-    {
-        console.log(response.url);
-    }*/
-};
-
 page.settings.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36';
 page.open(url, function (status) {
     waitFor(function() 
@@ -37,6 +23,7 @@ page.open(url, function (status) {
             return true;
         }
     }, function() {
+        page.render('screenshot' + new Date().getTime() + '.png');
         phantom.exit();
     }, 90000);
 });
@@ -44,7 +31,7 @@ page.open(url, function (status) {
 
 setTimeout(function() {
     phantom.exit();
-}, 90000)
+}, 100000)
 
 
 function waitFor(testFx, onReady, timeOutMillis) {
