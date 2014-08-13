@@ -25,14 +25,14 @@ page.open(url, function (status) {
 
         return false;
     }, function() {
-        page.render('screenshot' + new Date().getTime() + '.png');
+        page.render('screenshots/screenshot' + new Date().getTime() + '.png');
         phantom.exit();
     }, 90000);
 });
 
 
 setTimeout(function() {
-        page.render('screenshot' + new Date().getTime() + '.png');
+        page.render('screenshots/screenshot' + new Date().getTime() + '.png');
         phantom.exit();
 }, 100000)
 
