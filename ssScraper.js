@@ -8,6 +8,8 @@ page.viewportSize = {
 
 page.settings.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36';
 page.open(url, function (status) {
+    
+    
     waitFor(function() 
     {
         var res = page.evaluate(function() 
@@ -28,11 +30,12 @@ page.open(url, function (status) {
         page.render('screenshots/screenshot' + new Date().getTime() + '.png');
         phantom.exit();
     }, 90000);
+    
 });
 
 
 setTimeout(function() {
-        page.render('screenshots/screenshot' + new Date().getTime() + '.png');
+        page.render('screenshots/screenshot_exit' + new Date().getTime() + '.png');
         phantom.exit();
 }, 100000)
 

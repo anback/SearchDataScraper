@@ -85,6 +85,7 @@ function StartNewWork() {
 
     var process = childProcess.execFile(binPath, [path.join(__dirname, 'ssScraper.js'), ssUrl], function(err, stdout, stderr) {
         
+        //console.log(stdout);
         try {
             parseAndSendSSHTML(stdout);
         }
@@ -191,6 +192,7 @@ var parseAndSendSSHTML = function(html) {
         }
 
         console.log("Best Price: " + res.BestPrice + ", Orig: " + res.Itineraries[0].Origin + ", Dest: " + res.Itineraries[0].Dest);
+        
         searchdataChannel.publish('NewRes', res);
     });
     return res;
