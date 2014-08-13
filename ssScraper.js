@@ -30,13 +30,13 @@ page.open(url, function (status) {
     }, function() {
         console.log(readPage());
         phantom.exit();
-    }, 90000);
+    }, 130000);
 });
 
 setTimeout(function() {
         console.log(readPage());
         phantom.exit();
-}, 100000)
+}, 140000)
 
 
 function waitFor(testFx, onReady, timeOutMillis) {
