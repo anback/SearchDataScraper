@@ -9,15 +9,16 @@ page.viewportSize = {
 page.settings.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36';
 page.open(url, function (status) {
     
+    function readPage() {
+        return page.evaluate(function() 
+        {
+            return document.documentElement.outerHTML;
+        });
+    }
     
     waitFor(function() 
     {
-        var res = page.evaluate(function() 
-        {
-            if(document.getElementsByClassName('header-info-bestprice').length > 0)
-                return document.documentElement.outerHTML;
-            return undefined;
-        });
+        var res = readPage();
 
         if(res != undefined)
         {
@@ -27,15 +28,13 @@ page.open(url, function (status) {
 
         return false;
     }, function() {
-        page.render('screenshots/screenshot' + new Date().getTime() + '.png');
+        console.log(readPage());
         phantom.exit();
     }, 90000);
-    
 });
 
-
 setTimeout(function() {
-        page.render('screenshots/screenshot_exit' + new Date().getTime() + '.png');
+        console.log(readPage());
         phantom.exit();
 }, 100000)
 
