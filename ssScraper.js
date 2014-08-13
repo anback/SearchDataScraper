@@ -22,6 +22,8 @@ page.open(url, function (status) {
             console.log(res);
             return true;
         }
+
+        return false;
     }, function() {
         page.render('screenshot' + new Date().getTime() + '.png');
         phantom.exit();
@@ -30,7 +32,8 @@ page.open(url, function (status) {
 
 
 setTimeout(function() {
-    phantom.exit();
+        page.render('screenshot' + new Date().getTime() + '.png');
+        phantom.exit();
 }, 100000)
 
 
