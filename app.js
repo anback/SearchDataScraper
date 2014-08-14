@@ -98,7 +98,6 @@ function StartNewWork() {
         StartNewWork();
         processcount--;
     });
-    
 }
 
 var client = mubsub('mongodb://swalo:84kAanan@ds051658.mongolab.com:51658/swalo');
@@ -155,6 +154,10 @@ var parseAndSendSSHTML = function(html) {
         var $ = require('jquery')(window);
 
         res.BestPrice = $('.header-info-bestprice .price').text();
+
+        console.log(res.BestPrice);
+        console.log($('.day-list-item').length);
+        
         res.Itineraries = $('.day-list-item').map(function(item) {
             $this = $(this);
             var res = {};
@@ -195,7 +198,6 @@ var parseAndSendSSHTML = function(html) {
         
         searchdataChannel.publish('NewRes', res);
     });
-    return res;
 }
 
 // First, checks if it isn't implemented yet.

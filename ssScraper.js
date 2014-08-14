@@ -18,11 +18,14 @@ page.open(url, function (status) {
     
     waitFor(function() 
     {
-        var res = readPage();
+        var res = page.evaluate(function() {
+            if(document.getElementsByClassName("header-info-bestprice").length > 0)
+                return true;
+        });
 
-        if(res != undefined)
+        if(res)
         {
-            console.log(res);
+            console.log(readPage());
             return true;
         }
 
@@ -30,13 +33,13 @@ page.open(url, function (status) {
     }, function() {
         console.log(readPage());
         phantom.exit();
-    }, 130000);
+    }, 60000);
 });
 
 setTimeout(function() {
         console.log(readPage());
         phantom.exit();
-}, 140000)
+}, 70000)
 
 
 function waitFor(testFx, onReady, timeOutMillis) {
@@ -51,7 +54,7 @@ function waitFor(testFx, onReady, timeOutMillis) {
             } else {
                 if(!condition) {
                     // If condition still not fulfilled (timeout but condition is 'false')
-                    console.log("'waitFor()' timeout");
+                    //console.log("'waitFor()' timeout");
                     phantom.exit(1);
                 } else {
                     // Condition fulfilled (timeout and/or condition is 'true')
