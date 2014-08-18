@@ -38,8 +38,13 @@ setInterval(function() {
     
 
     console.log("Loadaverage: " + loadavg);
-    if(loadavg < cpus.length)
+    if(processcount < 176)
     {
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
+        StartNewWork();
         StartNewWork();
     }
 }, 3000);
