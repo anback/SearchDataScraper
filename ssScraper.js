@@ -6,16 +6,32 @@ page.viewportSize = {
   height: 912
 };
 
+page.onResourceReceived = function(response) {
+    if(response.url.indexOf("seenquoteprice") == -1)
+        return;
+
+    console.log(readPage(page));
+    phantom.exit();
+};
+
+function readPage(page) {
+    return page.evaluate(function() 
+    {
+        return document.documentElement.outerHTML;
+    });
+}
+
 page.settings.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36';
 page.open(url, function (status) {
     
-    function readPage() {
-        return page.evaluate(function() 
-        {
-            return document.documentElement.outerHTML;
-        });
-    }
-    
+});
+
+setTimeout(function() {
+        console.log(readPage(page));
+        phantom.exit();
+}, 30000);
+
+    /*
     waitFor(function() 
     {
         var res = page.evaluate(function() {
@@ -25,22 +41,16 @@ page.open(url, function (status) {
 
         if(res)
         {
-            console.log(readPage());
+            console.log(readPage(page));
             return true;
         }
 
         return false;
     }, function() {
-        console.log(readPage());
+        console.log(readPage(page));
         phantom.exit();
     }, 60000);
-});
-
-setTimeout(function() {
-        console.log(readPage());
-        phantom.exit();
-}, 70000)
-
+   
 
 function waitFor(testFx, onReady, timeOutMillis) {
     
@@ -65,3 +75,5 @@ function waitFor(testFx, onReady, timeOutMillis) {
             }
         }, 1000); //< repeat check every 250ms
 }
+
+ */
