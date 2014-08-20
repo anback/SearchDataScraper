@@ -38,7 +38,7 @@ setInterval(function() {
     
 
     console.log("Loadaverage: " + loadavg);
-    if(processcount < 150)
+    if(processcount < 10)
     {
         StartNewWork();
         StartNewWork();
